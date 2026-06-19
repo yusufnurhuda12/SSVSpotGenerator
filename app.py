@@ -206,108 +206,109 @@ if selected_site:
     
     st.markdown("<br>", unsafe_allow_html=True)
     
-    # Generate KMZ Button
-    if st.button("🚀 Generate KMZ File", use_container_width=True, type="primary"):
-        with st.spinner('Merender output KMZ...'):
-            kml = simplekml.Kml()
-            site_id = selected_site
-            folder_site = kml.newfolder(name=f"{site_id} - {site_name}")
-            folder_site.visibility = 1
+    # Generate KMZ Data
+    with st.spinner('Mempersiapkan data KMZ...'):
+        kml = simplekml.Kml()
+        site_id = selected_site
+        folder_site = kml.newfolder(name=f"{site_id} - {site_name}")
+        folder_site.visibility = 1
 
-            p_site = folder_site.newpoint(name=f"{site_id} - {site_name}")
-            p_site.coords = [(center_lon, center_lat)]
-            p_site.style.iconstyle.color = simplekml.Color.white
-            p_site.visibility = 1
+        p_site = folder_site.newpoint(name=f"{site_id} - {site_name}")
+        p_site.coords = [(center_lon, center_lat)]
+        p_site.style.iconstyle.color = simplekml.Color.white
+        p_site.visibility = 1
 
-            folder_ring = folder_site.newfolder(name="RING")
-            folder_ring.visibility = 1
-            x0, y0 = transformer_to_utm.transform(center_lon, center_lat)
+        folder_ring = folder_site.newfolder(name="RING")
+        folder_ring.visibility = 1
+        x0, y0 = transformer_to_utm.transform(center_lon, center_lat)
 
-            for r in [100, 300, 500]:
-                pol_ring = folder_ring.newpolygon(name=f"RING_{r}m")
-                pol_ring.visibility = 1
-                pts = []
-                for deg in np.linspace(0, 360, 360):
-                    rad = math.radians(deg)
-                    px = x0 + r * math.sin(rad)
-                    py = y0 + r * math.cos(rad)
-                    pts.append(transformer_to_wgs.transform(px, py))
-                pol_ring.outerboundaryis = pts
-                pol_ring.style.linestyle.color = simplekml.Color.white
-                pol_ring.style.linestyle.width = 3
-                pol_ring.style.polystyle.fill = 0
+        for r in [100, 300, 500]:
+            pol_ring = folder_ring.newpolygon(name=f"RING_{r}m")
+            pol_ring.visibility = 1
+            pts = []
+            for deg in np.linspace(0, 360, 360):
+                rad = math.radians(deg)
+                px = x0 + r * math.sin(rad)
+                py = y0 + r * math.cos(rad)
+                pts.append(transformer_to_wgs.transform(px, py))
+            pol_ring.outerboundaryis = pts
+            pol_ring.style.linestyle.color = simplekml.Color.white
+            pol_ring.style.linestyle.width = 3
+            pol_ring.style.polystyle.fill = 0
 
-            folder_az = folder_site.newfolder(name="AZIMUTH")
-            folder_az.visibility = 1
-            folder_spot = folder_site.newfolder(name="SPOT SSV")
-            folder_spot.visibility = 1
+        folder_az = folder_site.newfolder(name="AZIMUTH")
+        folder_az.visibility = 1
+        folder_spot = folder_site.newfolder(name="SPOT SSV")
+        folder_spot.visibility = 1
 
-            for sec_idx, (_, row) in enumerate(df_filtered.iterrows(), start=1):
-                lon = float(row['Longitude'])
-                lat = float(row['Latitude'])
-                az = float(row['Azimuth'])
-                bw = float(row['H Beamwidth'])
+        for sec_idx, (_, row) in enumerate(df_filtered.iterrows(), start=1):
+            lon = float(row['Longitude'])
+            lat = float(row['Latitude'])
+            az = float(row['Azimuth'])
+            bw = float(row['H Beamwidth'])
 
-                sector, _, _ = create_sector(lon, lat, az, bw, 500)
-                pol = folder_az.newpolygon(name=f"Sec {sec_idx} Azimuth {int(az)}")
-                pol.outerboundaryis = [(x, y) for x, y in sector.exterior.coords]
-                pol.visibility = 1
+            sector, _, _ = create_sector(lon, lat, az, bw, 500)
+            pol = folder_az.newpolygon(name=f"Sec {sec_idx} Azimuth {int(az)}")
+            pol.outerboundaryis = [(x, y) for x, y in sector.exterior.coords]
+            pol.visibility = 1
 
-                pol.description = "<br>".join([
-                    f"Site ID : {row['Site ID Surge']}", f"Site Name : {row['Site Name Surge']}",
-                    f"Longitude : {row['Longitude']}", f"Latitude : {row['Latitude']}",
-                    f"Azimuth : {row['Azimuth']}", f"Antenna Height : {row['Ant Height']}",
-                    f"Beamwidth : {row['H Beamwidth']}", f"Power : {row['Power']}",
-                    f"Antenna Gain : {row['A Gain']}", f"Frequency : {row['Freq']}", f"Band : {row['Band']}"
-                ])
+            pol.description = "<br>".join([
+                f"Site ID : {row['Site ID Surge']}", f"Site Name : {row['Site Name Surge']}",
+                f"Longitude : {row['Longitude']}", f"Latitude : {row['Latitude']}",
+                f"Azimuth : {row['Azimuth']}", f"Antenna Height : {row['Ant Height']}",
+                f"Beamwidth : {row['H Beamwidth']}", f"Power : {row['Power']}",
+                f"Antenna Gain : {row['A Gain']}", f"Frequency : {row['Freq']}", f"Band : {row['Band']}"
+            ])
 
-                color = simplekml.Color.green if sec_idx == 1 else (simplekml.Color.red if sec_idx == 2 else simplekml.Color.yellow)
-                pol.style.polystyle.color = simplekml.Color.changealphaint(120, color)
+            color = simplekml.Color.green if sec_idx == 1 else (simplekml.Color.red if sec_idx == 2 else simplekml.Color.yellow)
+            pol.style.polystyle.color = simplekml.Color.changealphaint(120, color)
 
-                rad = math.radians(az)
-                px_line = x0 + 500 * math.sin(rad)
-                py_line = y0 + 500 * math.cos(rad)
+            rad = math.radians(az)
+            px_line = x0 + 500 * math.sin(rad)
+            py_line = y0 + 500 * math.cos(rad)
 
-                line = folder_az.newlinestring(name=f"LINE_{int(az)}")
-                line.coords = [(lon, lat), transformer_to_wgs.transform(px_line, py_line)]
-                line.style.linestyle.color = simplekml.Color.white
-                line.style.linestyle.width = 2
-                line.visibility = 1
+            line = folder_az.newlinestring(name=f"LINE_{int(az)}")
+            line.coords = [(lon, lat), transformer_to_wgs.transform(px_line, py_line)]
+            line.style.linestyle.color = simplekml.Color.white
+            line.style.linestyle.width = 2
+            line.visibility = 1
 
-                folder_sec = folder_spot.newfolder(name=f"Sec {sec_idx}")
-                folder_sec.visibility = 1
-                spot_counter = 1
+            folder_sec = folder_spot.newfolder(name=f"Sec {sec_idx}")
+            folder_sec.visibility = 1
+            spot_counter = 1
 
-                for dist in [100, 300, 500]:
-                    px_spot = x0 + dist * math.sin(rad)
-                    py_spot = y0 + dist * math.cos(rad)
-                    lon2, lat2 = transformer_to_wgs.transform(px_spot, py_spot)
+            for dist in [100, 300, 500]:
+                px_spot = x0 + dist * math.sin(rad)
+                py_spot = y0 + dist * math.cos(rad)
+                lon2, lat2 = transformer_to_wgs.transform(px_spot, py_spot)
 
-                    pnt = folder_sec.newpoint(name=f"Sec {sec_idx} spot {spot_counter}")
-                    pnt.coords = [(lon2, lat2)]
-                    pnt.style.iconstyle.icon.href = "http://maps.google.com/mapfiles/kml/pushpin/blue-pushpin.png" if spot_counter == 2 else "http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png"
-                    pnt.visibility = 1
-                    spot_counter += 1
+                pnt = folder_sec.newpoint(name=f"Sec {sec_idx} spot {spot_counter}")
+                pnt.coords = [(lon2, lat2)]
+                pnt.style.iconstyle.icon.href = "http://maps.google.com/mapfiles/kml/pushpin/blue-pushpin.png" if spot_counter == 2 else "http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png"
+                pnt.visibility = 1
+                spot_counter += 1
 
-            kmz_name = f"SSV_{site_id}_{datetime.now().strftime('%d%b%Y')}.kmz"
-            kmz_path = os.path.abspath(kmz_name)
+        kmz_name = f"SSV_{site_id}_{datetime.now().strftime('%d%b%Y')}.kmz"
+        
+        kml.save("temp.kml")
+        import io
+        kmz_io = io.BytesIO()
+        with zipfile.ZipFile(kmz_io, 'w', zipfile.ZIP_DEFLATED) as z:
+            z.write("temp.kml", arcname="doc.kml")
+        
+        kmz_data = kmz_io.getvalue()
+        
+        if os.path.exists("temp.kml"):
+            os.remove("temp.kml")
 
-            kml.save("temp.kml")
-            with zipfile.ZipFile(kmz_path, 'w', zipfile.ZIP_DEFLATED) as z:
-                z.write("temp.kml", arcname="doc.kml")
-
-            try:
-                if os.name == 'nt':
-                    os.startfile(kmz_path)
-                elif sys.platform == 'darwin':
-                    import subprocess
-                    subprocess.call(('open', kmz_path))
-                st.success(f"✅ KMZ '{kmz_name}' berhasil dibuat dan otomatis dibuka!")
-            except Exception as e:
-                pass
-
-            if os.path.exists("temp.kml"):
-                os.remove("temp.kml")
+    st.download_button(
+        label="🚀 Download KMZ File",
+        data=kmz_data,
+        file_name=kmz_name,
+        mime="application/vnd.google-earth.kmz",
+        use_container_width=True,
+        type="primary"
+    )
                 
     st.markdown('</div>', unsafe_allow_html=True)
 
