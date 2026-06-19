@@ -1,0 +1,2 @@
+# SSVSpotGenerator
+SSVSpotGenerator
