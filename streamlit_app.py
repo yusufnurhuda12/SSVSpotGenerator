@@ -123,7 +123,17 @@ def load_and_clean_data(url):
     else:
         df_target['Cell Name'] = '-'
 
-    if 'Azimuth Review' in df_sumber.columns:
+    if 'AzimuthReview' in df_sumber.columns:
+        az_review = pd.to_numeric(df_sumber['AzimuthReview'], errors='coerce')
+        az_biasa = pd.to_numeric(df_sumber['Azimuth'], errors='coerce')
+        
+        # Cek per site, apakah site tersebut memiliki setidaknya satu nilai Azimuth Review yang valid
+        has_review = az_review.groupby(df_sumber['Site ID Surge']).transform(lambda x: x.notna().any())
+        
+        # Jika site punya review, pakai az_review (walaupun ada NaN, biar sektor berkurang).
+        # Jika tidak punya review sama sekali, pakai az_biasa.
+        df_target['Azimuth'] = np.where(has_review, az_review, az_biasa)
+    elif 'Azimuth Review' in df_sumber.columns:
         az_review = pd.to_numeric(df_sumber['Azimuth Review'], errors='coerce')
         az_biasa = pd.to_numeric(df_sumber['Azimuth'], errors='coerce')
         
