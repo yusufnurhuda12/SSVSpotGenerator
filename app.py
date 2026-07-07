@@ -246,7 +246,12 @@ def preview():
                 df_site['Longitude'] = pd.to_numeric(df_site['Longitude'], errors='coerce')
                 df_site['Latitude'] = pd.to_numeric(df_site['Latitude'], errors='coerce')
                 
-                if 'Azimuth Review' in df_site.columns:
+                if 'AzimuthReview' in df_site.columns:
+                    az_review = pd.to_numeric(df_site['AzimuthReview'], errors='coerce')
+                    az_biasa = pd.to_numeric(df_site['Azimuth'], errors='coerce')
+                    has_review = az_review.notna().any()
+                    df_site['Azimuth'] = np.where(has_review, az_review, az_biasa)
+                elif 'Azimuth Review' in df_site.columns:
                     az_review = pd.to_numeric(df_site['Azimuth Review'], errors='coerce')
                     az_biasa = pd.to_numeric(df_site['Azimuth'], errors='coerce')
                     has_review = az_review.notna().any()
