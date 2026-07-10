@@ -322,7 +322,7 @@ st.markdown('<div class="glass-card" style="text-align: center;">', unsafe_allow
 if 'active_menu' not in st.session_state:
     st.session_state.active_menu = "📡 SSV Spot Generator"
 
-menu_col1, menu_col2 = st.columns(2)
+menu_col1, menu_col2, menu_col3 = st.columns(3)
 with menu_col1:
     btn_type1 = "primary" if st.session_state.active_menu == "📡 SSV Spot Generator" else "secondary"
     if st.button("📡 SSV Spot Generator", use_container_width=True, type=btn_type1):
@@ -330,8 +330,14 @@ with menu_col1:
         st.rerun()
 
 with menu_col2:
-    btn_type2 = "primary" if st.session_state.active_menu == "🎯 SSV Spot Checker" else "secondary"
-    if st.button("🎯 SSV Spot Checker", use_container_width=True, type=btn_type2):
+    btn_type2 = "primary" if st.session_state.active_menu == "📑 KMZ for ATP" else "secondary"
+    if st.button("📑 KMZ for ATP", use_container_width=True, type=btn_type2):
+        st.session_state.active_menu = "📑 KMZ for ATP"
+        st.rerun()
+
+with menu_col3:
+    btn_type3 = "primary" if st.session_state.active_menu == "🎯 SSV Spot Checker" else "secondary"
+    if st.button("🎯 SSV Spot Checker", use_container_width=True, type=btn_type3):
         st.session_state.active_menu = "🎯 SSV Spot Checker"
         st.rerun()
 
@@ -340,6 +346,9 @@ menu = st.session_state.active_menu
 if menu == "📡 SSV Spot Generator":
     st.markdown("<h1>SSV Spot Generator</h1>", unsafe_allow_html=True)
     st.markdown("<div class='subtitle'>Render file KMZ Sektoral secara instan dan dinamis.</div>", unsafe_allow_html=True)
+elif menu == "📑 KMZ for ATP":
+    st.markdown("<h1>KMZ for ATP</h1>", unsafe_allow_html=True)
+    st.markdown("<div class='subtitle'>Render file KMZ untuk kebutuhan ATP tanpa Spot SSV.</div>", unsafe_allow_html=True)
 else:
     st.markdown("<h1>SSV Spot Checker</h1>", unsafe_allow_html=True)
     st.markdown("<div class='subtitle'>Validasi titik tes lapangan dengan koordinat sektor aktual.</div>", unsafe_allow_html=True)
@@ -630,20 +639,21 @@ if selected_site:
             tooltip=f"Garis Azimuth Sektor {sec_idx}"
         ).add_to(fg_lines)
         
-        # Spots at 100m, 300m, 500m
-        spot_counter = 1
-        for dist in [100, 300, 500]:
-            px_spot = x0 + dist * math.sin(rad)
-            py_spot = y0 + dist * math.cos(rad)
-            lon_spot, lat_spot = transformer_to_wgs.transform(px_spot, py_spot)
-            
-            icon_color = "blue" if spot_counter == 2 else "orange"
-            folium.Marker(
-                location=[lat_spot, lon_spot],
-                tooltip=f"Sec {sec_idx} Spot {spot_counter} ({dist}m)",
-                icon=folium.Icon(color=icon_color, icon='info-sign')
-            ).add_to(fg_lines)
-            spot_counter += 1
+        if menu != "📑 KMZ for ATP":
+            # Spots at 100m, 300m, 500m
+            spot_counter = 1
+            for dist in [100, 300, 500]:
+                px_spot = x0 + dist * math.sin(rad)
+                py_spot = y0 + dist * math.cos(rad)
+                lon_spot, lat_spot = transformer_to_wgs.transform(px_spot, py_spot)
+                
+                icon_color = "blue" if spot_counter == 2 else "orange"
+                folium.Marker(
+                    location=[lat_spot, lon_spot],
+                    tooltip=f"Sec {sec_idx} Spot {spot_counter} ({dist}m)",
+                    icon=folium.Icon(color=icon_color, icon='info-sign')
+                ).add_to(fg_lines)
+                spot_counter += 1
 
     if points:
         for pt in points:
@@ -741,7 +751,8 @@ if selected_site:
 
         folder_az = folder_site.newfolder(name="AZIMUTH")
         folder_az.visibility = 1
-        folder_spot = folder_site.newfolder(name="SPOT SSV")
+        if menu != "📑 KMZ for ATP":
+            folder_spot = folder_site.newfolder(name="SPOT SSV")
         st.write("🛰️ Membangun poligon Sektor dan Spot Area...")
         colors = ['ff00ff00', 'ff0000ff', 'ff00ffff', 'ffff0000', 'ffff00ff']
         for sec_idx, (_, row) in enumerate(df_filtered.iterrows(), start=1):
@@ -776,20 +787,21 @@ if selected_site:
             line.style.linestyle.width = 2
             line.visibility = 1
 
-            folder_sec = folder_spot.newfolder(name=f"Sec {sec_idx}")
-            folder_sec.visibility = 1
-            spot_counter = 1
+            if menu != "📑 KMZ for ATP":
+                folder_sec = folder_spot.newfolder(name=f"Sec {sec_idx}")
+                folder_sec.visibility = 1
+                spot_counter = 1
 
-            for dist in [100, 300, 500]:
-                px_spot = x0 + dist * math.sin(rad)
-                py_spot = y0 + dist * math.cos(rad)
-                lon2, lat2 = transformer_to_wgs.transform(px_spot, py_spot)
+                for dist in [100, 300, 500]:
+                    px_spot = x0 + dist * math.sin(rad)
+                    py_spot = y0 + dist * math.cos(rad)
+                    lon2, lat2 = transformer_to_wgs.transform(px_spot, py_spot)
 
-                pnt = folder_sec.newpoint(name=f"Sec {sec_idx} spot {spot_counter}")
-                pnt.coords = [(lon2, lat2)]
-                pnt.style.iconstyle.icon.href = "http://maps.google.com/mapfiles/kml/pushpin/blue-pushpin.png" if spot_counter == 2 else "http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png"
-                pnt.visibility = 1
-                spot_counter += 1
+                    pnt = folder_sec.newpoint(name=f"Sec {sec_idx} spot {spot_counter}")
+                    pnt.coords = [(lon2, lat2)]
+                    pnt.style.iconstyle.icon.href = "http://maps.google.com/mapfiles/kml/pushpin/blue-pushpin.png" if spot_counter == 2 else "http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png"
+                    pnt.visibility = 1
+                    spot_counter += 1
 
         if points:
             st.write("🎯 Menambahkan Field Test Points ke dalam KMZ...")
@@ -802,7 +814,10 @@ if selected_site:
                 p_spot.visibility = 1
                 p_spot.description = pt['desc_html']
 
-        kmz_name = f"SSV_{site_id}_{datetime.now().strftime('%d%b%Y')}.kmz"
+        if menu == "📑 KMZ for ATP":
+            kmz_name = f"ATP_{site_id}_{datetime.now().strftime('%d%b%Y')}.kmz"
+        else:
+            kmz_name = f"SSV_{site_id}_{datetime.now().strftime('%d%b%Y')}.kmz"
         
         status.update(label="✅ Super KMZ Berhasil Dibuat!", state="complete", expanded=False)
         
