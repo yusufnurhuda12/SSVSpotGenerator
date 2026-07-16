@@ -9,4 +9,4 @@ streamlit-folium
 plotly
 geopy
 reportlab
-fpdf
+fpdf==1.7.2
