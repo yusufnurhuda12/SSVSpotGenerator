@@ -80,4 +80,4 @@ def generate_pdf(site_id, site_name, df_sectors, dist_data):
             pdf.cell(50, 8, str(spot['Jarak Aktual (m)']), border=1, ln=True)
 
     # Output to bytes
-    return bytes(pdf.output(dest='S'))
+    return bytes(pdf.output())
