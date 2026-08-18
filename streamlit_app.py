@@ -26,68 +26,257 @@ from report_generator import generate_pdf
 # ==============================
 st.set_page_config(page_title="SSV Spot Checker", page_icon="📡", layout="centered")
 
-# Inject Custom CSS for Premium Tool Look
+# Inject Custom CSS for Ultra-Premium Dark Glassmorphism & Micro-Interactions
 st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@300;400;500;600;700;800&display=swap');
 
-    /* Global Font & Background */
+    /* Global Font & Dynamic Ambient Dark Canvas */
     html, body, .stApp {
-        font-family: 'Outfit', sans-serif;
-    }
-    .stApp {
-        background: radial-gradient(circle at 50% 0%, #1e1b4b 0%, #0f172a 60%, #020617 100%);
-        color: #e2e8f0;
+        font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+        background-color: #060913 !important;
+        background-image: 
+            radial-gradient(circle at 20% 0%, rgba(99, 102, 241, 0.18) 0%, transparent 45%),
+            radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.15) 0%, transparent 40%),
+            radial-gradient(circle at 50% 100%, rgba(6, 182, 212, 0.12) 0%, transparent 50%),
+            radial-gradient(circle at 50% 50%, #0c1222 0%, #060913 100%) !important;
+        background-attachment: fixed !important;
+        color: #f1f5f9;
     }
     
-    /* Animated Glowing Title */
+    /* Precision Monospace Class for Technical Data */
+    .mono-data {
+        font-family: 'JetBrains Mono', monospace !important;
+        letter-spacing: -0.02em;
+    }
+
+    /* Animated Glowing Gradient Title */
     h1 {
         text-align: center;
-        background: linear-gradient(135deg, #00f2fe, #4facfe, #00f2fe);
-        background-size: 200% auto;
+        background: linear-gradient(135deg, #38bdf8 0%, #818cf8 35%, #c084fc 70%, #38bdf8 100%);
+        background-size: 300% auto;
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         font-weight: 800 !important;
-        font-size: 3.5rem !important;
-        letter-spacing: -1px;
-        margin-bottom: 0px !important;
+        font-size: 3.2rem !important;
+        letter-spacing: -1.5px;
+        margin-bottom: 2px !important;
         padding-bottom: 0px !important;
-        animation: shine 3s linear infinite;
+        animation: gradientShimmer 6s ease infinite;
     }
-    @keyframes shine {
-        to { background-position: 200% center; }
+    @keyframes gradientShimmer {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
     }
     
     .subtitle {
         text-align: center;
         color: #94a3b8;
-        font-size: 1.1rem;
+        font-size: 1.05rem;
         font-weight: 300;
-        margin-bottom: 25px;
+        letter-spacing: 0.2px;
+        margin-bottom: 20px;
     }
     
-    /* Tombol utama (Download & Button) */
+    /* Ultra-Refined Dark Glassmorphism Cards */
+    .glass-card {
+        background: rgba(15, 23, 42, 0.55);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-top: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 20px;
+        padding: 24px;
+        margin-bottom: 20px;
+        box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5), 0 0 20px 0 rgba(99, 102, 241, 0.05);
+        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+    }
+    .glass-card:hover {
+        border-color: rgba(139, 92, 246, 0.25);
+        box-shadow: 0 16px 40px -12px rgba(0, 0, 0, 0.6), 0 0 25px 2px rgba(139, 92, 246, 0.12);
+    }
+    
+    /* Top Nav Segmented Controller Buttons */
+    .stButton>button {
+        border-radius: 14px !important;
+        font-weight: 500 !important;
+        font-size: 0.95rem !important;
+        padding: 10px 18px !important;
+        transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    }
+    .stButton>button[kind="secondary"] {
+        background: rgba(30, 41, 59, 0.45) !important;
+        border: 1px solid rgba(255, 255, 255, 0.07) !important;
+        color: #94a3b8 !important;
+        backdrop-filter: blur(10px) !important;
+    }
+    .stButton>button[kind="secondary"]:hover {
+        background: rgba(51, 65, 85, 0.65) !important;
+        color: #f8fafc !important;
+        border-color: rgba(255, 255, 255, 0.2) !important;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px -4px rgba(0, 0, 0, 0.3) !important;
+    }
     .stButton>button[kind="primary"], .stDownloadButton>button[kind="primary"] {
-        background: linear-gradient(90deg, #3b82f6, #8b5cf6) !important;
-        border: none !important;
-        border-radius: 12px !important;
-        color: white !important;
+        background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #9333ea 100%) !important;
+        border: 1px solid rgba(255, 255, 255, 0.25) !important;
+        border-radius: 14px !important;
+        color: #ffffff !important;
         font-weight: 600 !important;
-        font-size: 1.1rem !important;
-        transition: transform 0.2s, box-shadow 0.2s !important;
+        font-size: 1rem !important;
+        box-shadow: 0 4px 20px -2px rgba(124, 58, 237, 0.4) !important;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
     }
     .stButton>button[kind="primary"]:hover, .stDownloadButton>button[kind="primary"]:hover {
+        transform: translateY(-3px) scale(1.01) !important;
+        box-shadow: 0 10px 28px -4px rgba(124, 58, 237, 0.6), 0 0 15px 2px rgba(147, 51, 234, 0.4) !important;
+    }
+
+    /* KPI Metric Cards Grid */
+    .metric-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+        margin: 18px 0;
+    }
+    @media (max-width: 768px) {
+        .metric-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+    .metric-chip {
+        background: rgba(30, 41, 59, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: 14px;
+        padding: 12px 14px;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.2s ease;
+    }
+    .metric-chip:hover {
+        background: rgba(51, 65, 85, 0.4);
+        border-color: rgba(139, 92, 246, 0.3);
         transform: translateY(-2px);
-        box-shadow: 0 10px 20px -10px rgba(139, 92, 246, 0.5);
+    }
+    .metric-chip::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, var(--accent-color, #8b5cf6), transparent);
+    }
+    .metric-title {
+        font-size: 0.75rem;
+        font-weight: 500;
+        color: #94a3b8;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 4px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .metric-value {
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: #f8fafc;
+        font-family: 'JetBrains Mono', monospace;
+    }
+    .metric-sub {
+        font-size: 0.72rem;
+        color: #64748b;
+        margin-top: 2px;
+    }
+
+    /* Floating Map Legend Bar */
+    .legend-bar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        background: rgba(15, 23, 42, 0.75);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 12px;
+        padding: 8px 14px;
+        margin-bottom: 12px;
+        align-items: center;
+        font-size: 0.85rem;
+    }
+    .legend-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 8px;
+        background: rgba(255, 255, 255, 0.04);
+        border-radius: 8px;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.8rem;
+    }
+    .legend-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        box-shadow: 0 0 8px currentColor;
+    }
+
+    /* Live Pulse Badge */
+    .live-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        background: rgba(16, 185, 129, 0.12);
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        border-radius: 20px;
+        color: #34d399;
+        font-size: 0.78rem;
+        font-weight: 600;
+    }
+    .pulse-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background-color: #34d399;
+        box-shadow: 0 0 8px #34d399;
+        animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    @keyframes pulse {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.4; transform: scale(0.85); }
+    }
+
+    /* Sleek Input Fields */
+    .stSelectbox div[data-baseweb="select"] > div {
+        background-color: rgba(15, 23, 42, 0.6) !important;
+        border: 1px solid rgba(255, 255, 255, 0.12) !important;
+        border-radius: 12px !important;
+        color: #f1f5f9 !important;
+        transition: all 0.2s ease !important;
+    }
+    .stSelectbox div[data-baseweb="select"] > div:hover, 
+    .stSelectbox div[data-baseweb="select"] > div:focus-within {
+        border-color: #8b5cf6 !important;
+        box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2) !important;
     }
     
-    /* Kontainer modern */
-    .glass-card {
-        background: rgba(30, 41, 59, 0.2);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 16px;
-        padding: 24px;
-        margin-bottom: 24px;
+    .stTextArea textarea {
+        background-color: rgba(15, 23, 42, 0.6) !important;
+        border: 1px solid rgba(255, 255, 255, 0.12) !important;
+        border-radius: 14px !important;
+        font-family: 'JetBrains Mono', monospace !important;
+        font-size: 0.85rem !important;
+        color: #e2e8f0 !important;
+        transition: all 0.2s ease !important;
+    }
+    .stTextArea textarea:focus {
+        border-color: #06b6d4 !important;
+        box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.2) !important;
+    }
+
+    /* Map iframe styling */
+    iframe {
+        border-radius: 16px !important;
+        box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.5) !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -298,11 +487,21 @@ def parse_input_data(text_data):
         if not sector_val and num_cols > 3:
             sector_val = row_data.get(headers[3], '').strip()
 
-        name_parts = []
-        if scenario: name_parts.append(scenario)
-        if sector_val: name_parts.append(f"Sector {sector_val}")
-            
-        name = " ".join(name_parts) if name_parts else f"Point {row_idx}"
+        # Ekstrak angka sektor dan skenario untuk format SecX_ScenY
+        sec_num = ''.join(filter(str.isdigit, sector_val)) if sector_val else ""
+        scen_num = ''.join(filter(str.isdigit, scenario)) if scenario else ""
+
+        if sec_num and scen_num:
+            name = f"Sec{sec_num}_Scen{scen_num}"
+        elif sec_num:
+            name = f"Sec{sec_num}"
+        elif scen_num:
+            name = f"Scen{scen_num}"
+        else:
+            name_parts = []
+            if sector_val: name_parts.append(f"Sec {sector_val}")
+            if scenario: name_parts.append(scenario)
+            name = "_".join(name_parts) if name_parts else f"Point_{row_idx}"
             
         points.append({
             'lat': lat,
@@ -330,9 +529,9 @@ with menu_col1:
         st.rerun()
 
 with menu_col2:
-    btn_type2 = "primary" if st.session_state.active_menu == "📑 KMZ for ATP" else "secondary"
-    if st.button("📑 KMZ for ATP", use_container_width=True, type=btn_type2):
-        st.session_state.active_menu = "📑 KMZ for ATP"
+    btn_type2 = "primary" if st.session_state.active_menu in ["📑 KMZ for ATP V2", "📑 KMZ for ATP"] else "secondary"
+    if st.button("📑 KMZ for ATP V2", use_container_width=True, type=btn_type2):
+        st.session_state.active_menu = "📑 KMZ for ATP V2"
         st.rerun()
 
 with menu_col3:
@@ -345,13 +544,16 @@ menu = st.session_state.active_menu
 
 if menu == "📡 SSV Spot Generator":
     st.markdown("<h1>SSV Spot Generator</h1>", unsafe_allow_html=True)
-    st.markdown("<div class='subtitle'>Render file KMZ Sektoral secara instan dan dinamis.</div>", unsafe_allow_html=True)
-elif menu == "📑 KMZ for ATP":
-    st.markdown("<h1>KMZ for ATP</h1>", unsafe_allow_html=True)
-    st.markdown("<div class='subtitle'>Render file KMZ untuk kebutuhan ATP tanpa Spot SSV.</div>", unsafe_allow_html=True)
+    st.markdown("<div class='subtitle'>Buat file KMZ sektoral lengkap dengan garis azimuth dan panduan titik uji secara otomatis.</div>", unsafe_allow_html=True)
+elif menu in ["📑 KMZ for ATP V2", "📑 KMZ for ATP"]:
+    st.markdown("<h1>KMZ for ATP V2</h1>", unsafe_allow_html=True)
+    st.markdown("<div class='subtitle'>Siapkan file KMZ siap pakai untuk dokumen ATP, lengkap dengan sektor 100m dan titik skenario.</div>", unsafe_allow_html=True)
+elif menu == "📑 KMZ for ATP V1":
+    st.markdown("<h1>KMZ for ATP V1</h1>", unsafe_allow_html=True)
+    st.markdown("<div class='subtitle'>Buat file KMZ berformat ringkas khusus untuk kebutuhan pelaporan ATP awal.</div>", unsafe_allow_html=True)
 else:
     st.markdown("<h1>SSV Spot Checker</h1>", unsafe_allow_html=True)
-    st.markdown("<div class='subtitle'>Validasi titik tes lapangan dengan koordinat sektor aktual.</div>", unsafe_allow_html=True)
+    st.markdown("<div class='subtitle'>Cocokkan koordinat hasil uji lapangan Anda langsung dengan posisi sektor aktual di peta.</div>", unsafe_allow_html=True)
 
 st.markdown('</div>', unsafe_allow_html=True)
 
@@ -519,24 +721,64 @@ if selected_site:
     center_lat = float(df_filtered.iloc[0]['Latitude'])
     
     
-    st.markdown(f"### 📍 {site_name} <span style='font-size: 0.8rem; background-color: #1a4d2e; color: #4ade80; padding: 4px 10px; border-radius: 12px; vertical-align: middle; margin-left: 10px;'>🟢 Sync: LLD Fiberhome</span>", unsafe_allow_html=True)
-    
+    band_val = df_filtered.iloc[0].get('Band', 'n50')
     azimuths_str = ", ".join(df_filtered['Azimuth'].astype(int).astype(str).tolist())
     maps_url = f"https://www.google.com/maps/dir/?api=1&destination={center_lat},{center_lon}"
-    
-    st.markdown(f"""
-    <div style="font-size: 0.9rem; color: #a0aec0; margin-bottom: 15px;">
-        Site ID: {selected_site} &nbsp;|&nbsp; Total Sektor: {len(df_filtered)} &nbsp;|&nbsp; Azimuth: {azimuths_str} &nbsp;|&nbsp; 
-        <a href="{maps_url}" target="_blank" style="color: #00f2fe; text-decoration: none; font-weight: bold; background: rgba(0, 242, 254, 0.1); padding: 2px 6px; border-radius: 4px;">
-            🧭 Rute ke Lokasi ({center_lat:.5f}, {center_lon:.5f})
-        </a>
-    </div>
-    """, unsafe_allow_html=True)
-    
-    st.markdown("<br>", unsafe_allow_html=True)
+
+    # Compact & Clean Sleek Glass Header
+    header_html = (
+        f'<div class="glass-card" style="padding: 18px 24px; margin-bottom: 16px;">'
+        f'<div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">'
+        f'<div>'
+        f'<div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">'
+        f'<h2 style="margin: 0; font-size: 1.5rem; font-weight: 700; color: #f8fafc;">📍 {site_name}</h2>'
+        f'<span class="live-badge"><span class="pulse-dot"></span> LLD Fiberhome</span>'
+        f'</div>'
+        f'<div style="color: #94a3b8; font-size: 0.88rem; margin-top: 6px; font-family: \'JetBrains Mono\', monospace;">'
+        f'Site ID: <span style="color: #38bdf8; font-weight: 600;">{selected_site}</span> &nbsp;•&nbsp; '
+        f'Total Sektor: <span style="color: #a78bfa; font-weight: 600;">{len(df_filtered)}</span> &nbsp;•&nbsp; '
+        f'Azimuth: <span style="color: #ffd600; font-weight: 600;">{azimuths_str}°</span> &nbsp;•&nbsp; '
+        f'Koordinat: <span style="color: #cbd5e1;">{center_lat:.5f}, {center_lon:.5f}</span>'
+        f'</div>'
+        f'</div>'
+        f'<div>'
+        f'<a href="{maps_url}" target="_blank" style="display: inline-flex; align-items: center; gap: 6px; color: #00f2fe; text-decoration: none; font-weight: 600; font-size: 0.85rem; background: rgba(6, 182, 212, 0.12); border: 1px solid rgba(6, 182, 212, 0.3); padding: 8px 16px; border-radius: 12px; transition: all 0.2s ease;">'
+        f'🧭 Rute Google Maps ↗'
+        f'</a>'
+        f'</div>'
+        f'</div>'
+        f'</div>'
+    )
+    st.markdown(header_html, unsafe_allow_html=True)
     
     st.markdown('<div class="glass-card">', unsafe_allow_html=True)
-    st.markdown("<h3 style='margin-top: 0px; margin-bottom: 15px; color: #e2e8f0; font-weight: 600;'>🌍 Live Interactive Map Preview</h3>", unsafe_allow_html=True)
+    
+    # Legend Generator untuk Sektor
+    legend_items_html = ""
+    is_atp = menu in ["📑 KMZ for ATP V2", "📑 KMZ for ATP"]
+    sec_palette = ['#e53935', '#00e676', '#ffd600', '#2979ff', '#d500f9'] if is_atp else ['#00ff00', '#ff0000', '#ffff00', '#0000ff', '#ff00ff']
+    
+    for sec_i, (_, r_sec) in enumerate(df_filtered.iterrows(), start=1):
+        dot_col = sec_palette[(sec_i - 1) % len(sec_palette)]
+        az_deg = int(r_sec['Azimuth'])
+        pci_str = r_sec.get('PCI', '-')
+        legend_items_html += (
+            f'<div class="legend-item">'
+            f'<span class="legend-dot" style="background-color: {dot_col}; color: {dot_col};"></span>'
+            f'<span>Sec {sec_i}: <b>{az_deg}°</b> <span style="color: #64748b;">(PCI {pci_str})</span></span>'
+            f'</div>'
+        )
+    
+    map_title_html = (
+        f'<div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">'
+        f'<h3 style="margin: 0; color: #f8fafc; font-weight: 700; font-size: 1.25rem;">🌍 Live Interactive Map Preview</h3>'
+        f'<div class="legend-bar" style="margin: 0;">'
+        f'<span style="font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; font-weight: 600;">Sectors:</span>'
+        f'{legend_items_html}'
+        f'</div>'
+        f'</div>'
+    )
+    st.markdown(map_title_html, unsafe_allow_html=True)
     
     # Map Preview dengan tema gelap (CartoDB dark_matter) agar seirama dengan Dark Mode
     m = folium.Map(location=[center_lat, center_lon], zoom_start=16, tiles='CartoDB dark_matter', control_scale=True)
@@ -586,22 +828,30 @@ if selected_site:
     fg_rings = folium.FeatureGroup(name='Ring Radius', show=True)
     fg_sectors = folium.FeatureGroup(name='Sektor (Polygon)', show=True)
     fg_lines = folium.FeatureGroup(name='Garis Azimuth', show=True)
-    fg_spots = folium.FeatureGroup(name='Titik Tes (Field)', show=True)
+    fg_spots = folium.FeatureGroup(name='Titik Tes / Skenario', show=True)
     
-    folium.Marker([center_lat, center_lon], popup=site_name, tooltip="Pusat Site", icon=folium.Icon(color='lightgray', icon='info-sign')).add_to(m)
+    is_atp = menu in ["📑 KMZ for ATP V2", "📑 KMZ for ATP"]
+    is_atp_v1 = (menu == "📑 KMZ for ATP V1")
+    folium.Marker([center_lat, center_lon], popup=site_name, tooltip=f"Pusat Site: {site_name}", icon=folium.Icon(color='lightgray', icon='info-sign')).add_to(m)
     
+    ring_color = '#ffd600' if is_atp else 'white'
+    line_color = '#ffd600' if is_atp else 'white'
+
     # Tambahkan RING (100m, 300m, 500m) ke peta web
     for r in [100, 300, 500]:
         folium.Circle(
             location=[center_lat, center_lon],
             radius=r,
-            color='white',
-            weight=1,
+            color=ring_color,
+            weight=2 if is_atp else 1,
             fill=False,
             tooltip=f"Ring {r}m"
         ).add_to(fg_rings)
 
-    colors = ['#00ff00', '#ff0000', '#ffff00', '#0000ff', '#ff00ff']
+    sector_colors_atp = ['#e53935', '#00e676', '#ffd600', '#2979ff', '#d500f9']
+    sector_colors_std = ['#00ff00', '#ff0000', '#ffff00', '#0000ff', '#ff00ff']
+    chosen_colors = sector_colors_atp if is_atp else sector_colors_std
+
     x0, y0 = transformer_to_utm.transform(center_lon, center_lat)
 
     for sec_idx, (_, row) in enumerate(df_filtered.iterrows(), start=1):
@@ -610,8 +860,9 @@ if selected_site:
         az = float(row['Azimuth'])
         bw = float(row['H Beamwidth'])
         
-        # Sector polygon
-        sector, _, _ = create_sector(lon, lat, az, bw, 500) 
+        # Sector polygon: untuk ATP dibuat full 100m mengikuti lingkaran ring 100m
+        sec_radius = 100 if is_atp else 500
+        sector, _, _ = create_sector(lon, lat, az, bw, sec_radius) 
         coords = [(y, x) for x, y in sector.exterior.coords]
         
         pci_val = row.get('PCI', '-')
@@ -619,28 +870,41 @@ if selected_site:
         
         tooltip_html = f"<div style='min-width:120px; font-family:sans-serif;'><b>Sektor {sec_idx}</b><br>Azimuth: {az}°<br>PCI: {pci_val}<br>Sector: {cell_name}</div>"
         
-        color = colors[(sec_idx - 1) % len(colors)]
+        color = chosen_colors[(sec_idx - 1) % len(chosen_colors)]
         folium.Polygon(
-            locations=coords, color=color, fill=True, fill_opacity=0.2,
-            weight=1, tooltip=tooltip_html
+            locations=coords, color=color, fill=True, fill_opacity=0.6 if is_atp else 0.2,
+            weight=2 if is_atp else 1, tooltip=tooltip_html
         ).add_to(fg_sectors)
         
-        # Line dan Spot dari perhitungan KMZ, ditambahkan ke Folium
+        # Line dari site ke 500m
         rad = math.radians(az)
         px_line = x0 + 500 * math.sin(rad)
         py_line = y0 + 500 * math.cos(rad)
         lon_line_end, lat_line_end = transformer_to_wgs.transform(px_line, py_line)
         
-        # Line dari site ke 500m
         folium.PolyLine(
             locations=[[lat, lon], [lat_line_end, lon_line_end]],
-            color='white',
+            color=line_color,
             weight=2,
-            tooltip=f"Garis Azimuth Sektor {sec_idx}"
+            tooltip=f"Garis Azimuth Sektor {sec_idx} ({int(az)}°)"
         ).add_to(fg_lines)
         
-        if menu != "📑 KMZ for ATP":
-            # Spots at 100m, 300m, 500m
+        if is_atp:
+            for scen_idx, dist in enumerate([100, 300, 500], start=1):
+                px_spot = x0 + dist * math.sin(rad)
+                py_spot = y0 + dist * math.cos(rad)
+                lon_spot, lat_spot = transformer_to_wgs.transform(px_spot, py_spot)
+                
+                folium.CircleMarker(
+                    location=[lat_spot, lon_spot],
+                    radius=5,
+                    color='#ffd600',
+                    fill=True,
+                    fill_color='#ffd600',
+                    fill_opacity=0.9,
+                    tooltip=f"Sec{sec_idx}_Scen{scen_idx} ({dist}m)"
+                ).add_to(fg_spots)
+        elif menu != "📑 KMZ for ATP":
             spot_counter = 1
             for dist in [100, 300, 500]:
                 px_spot = x0 + dist * math.sin(rad)
@@ -650,7 +914,7 @@ if selected_site:
                 icon_color = "blue" if spot_counter == 2 else "orange"
                 folium.Marker(
                     location=[lat_spot, lon_spot],
-                    tooltip=f"Sec {sec_idx} Spot {spot_counter} ({dist}m)",
+                    tooltip=f"Sec{sec_idx}_Scen{spot_counter} ({dist}m)",
                     icon=folium.Icon(color=icon_color, icon='info-sign')
                 ).add_to(fg_lines)
                 spot_counter += 1
@@ -721,15 +985,17 @@ if selected_site:
         st.write("🔍 Mempersiapkan metadata Site...")
         kml = simplekml.Kml()
         site_id = selected_site
-        folder_site = kml.newfolder(name=f"{site_id} - {site_name}")
+        site_label = f"{site_name}" if is_atp else f"{site_id} - {site_name}"
+        folder_site = kml.newfolder(name=site_label)
         folder_site.visibility = 1
 
-        p_site = folder_site.newpoint(name=f"{site_id} - {site_name}")
+        p_site = folder_site.newpoint(name=site_label)
         p_site.coords = [(center_lon, center_lat)]
         p_site.style.iconstyle.color = simplekml.Color.white
+        p_site.style.iconstyle.scale = 0.8
+        p_site.style.labelstyle.color = simplekml.Color.white
+        p_site.style.labelstyle.scale = 1.0
         p_site.visibility = 1
-
-        st.write("⭕ Membuat poligon Radius (100m, 300m, 500m)...")
 
         st.write("⭕ Membuat poligon Ring Radius (100m, 300m, 500m)...")
         folder_ring = folder_site.newfolder(name="RING")
@@ -745,23 +1011,38 @@ if selected_site:
                 py = y0 + r * math.cos(rad)
                 pts.append(transformer_to_wgs.transform(px, py))
             pol_ring.outerboundaryis = pts
-            pol_ring.style.linestyle.color = simplekml.Color.white
-            pol_ring.style.linestyle.width = 3
+            
+            if is_atp:
+                pol_ring.style.linestyle.color = simplekml.Color.yellow
+                pol_ring.style.linestyle.width = 2
+            else:
+                pol_ring.style.linestyle.color = simplekml.Color.white
+                pol_ring.style.linestyle.width = 3
             pol_ring.style.polystyle.fill = 0
 
-        folder_az = folder_site.newfolder(name="AZIMUTH")
+        folder_az = folder_site.newfolder(name="AZIMUTH" if not is_atp else "SECTOR & AZIMUTH")
         folder_az.visibility = 1
-        if menu != "📑 KMZ for ATP":
+        
+        if is_atp:
+            folder_scen = folder_site.newfolder(name="SCENARIO SPOTS")
+            folder_scen.visibility = 1
+        elif not is_atp_v1:
             folder_spot = folder_site.newfolder(name="SPOT SSV")
+            folder_spot.visibility = 1
+
         st.write("🛰️ Membangun poligon Sektor dan Spot Area...")
-        colors = ['ff00ff00', 'ff0000ff', 'ff00ffff', 'ffff0000', 'ffff00ff']
+        kml_colors_atp = [simplekml.Color.red, simplekml.Color.green, simplekml.Color.yellow, simplekml.Color.blue]
+        kml_colors_std = [simplekml.Color.green, simplekml.Color.red, simplekml.Color.yellow, simplekml.Color.blue]
+
         for sec_idx, (_, row) in enumerate(df_filtered.iterrows(), start=1):
             lon = float(row['Longitude'])
             lat = float(row['Latitude'])
             az = float(row['Azimuth'])
             bw = float(row['H Beamwidth'])
 
-            sector, _, _ = create_sector(lon, lat, az, bw, 500)
+            # Sektor wedge: 100m untuk ATP (full sampai ring 100m), 500m untuk SSV biasa
+            sec_radius = 100 if is_atp else 500
+            sector, _, _ = create_sector(lon, lat, az, bw, sec_radius)
             pol = folder_az.newpolygon(name=f"Sec {sec_idx} Azimuth {int(az)}")
             pol.outerboundaryis = [(x, y) for x, y in sector.exterior.coords]
             pol.visibility = 1
@@ -774,20 +1055,46 @@ if selected_site:
                 f"Antenna Gain : {row['A Gain']}", f"Frequency : {row['Freq']}", f"Band : {row['Band']}"
             ])
 
-            color = simplekml.Color.green if sec_idx == 1 else (simplekml.Color.red if sec_idx == 2 else simplekml.Color.yellow)
-            pol.style.polystyle.color = simplekml.Color.changealphaint(120, color)
+            if is_atp:
+                chosen_kml_col = kml_colors_atp[(sec_idx - 1) % len(kml_colors_atp)]
+                pol.style.polystyle.color = simplekml.Color.changealphaint(210, chosen_kml_col)
+                pol.style.linestyle.color = simplekml.Color.black
+                pol.style.linestyle.width = 1
+            else:
+                chosen_kml_col = kml_colors_std[(sec_idx - 1) % len(kml_colors_std)]
+                pol.style.polystyle.color = simplekml.Color.changealphaint(120, chosen_kml_col)
 
             rad = math.radians(az)
             px_line = x0 + 500 * math.sin(rad)
             py_line = y0 + 500 * math.cos(rad)
 
-            line = folder_az.newlinestring(name=f"LINE_{int(az)}")
+            line = folder_az.newlinestring(name=f"LINE_Sec{sec_idx}_{int(az)}")
             line.coords = [(lon, lat), transformer_to_wgs.transform(px_line, py_line)]
-            line.style.linestyle.color = simplekml.Color.white
-            line.style.linestyle.width = 2
+            if is_atp:
+                line.style.linestyle.color = simplekml.Color.yellow
+                line.style.linestyle.width = 2
+            else:
+                line.style.linestyle.color = simplekml.Color.white
+                line.style.linestyle.width = 2
             line.visibility = 1
 
-            if menu != "📑 KMZ for ATP":
+            if is_atp:
+                folder_sec_scen = folder_scen.newfolder(name=f"Sec {sec_idx}")
+                folder_sec_scen.visibility = 1
+                for scen_idx, dist in enumerate([100, 300, 500], start=1):
+                    px_spot = x0 + dist * math.sin(rad)
+                    py_spot = y0 + dist * math.cos(rad)
+                    lon2, lat2 = transformer_to_wgs.transform(px_spot, py_spot)
+
+                    scen_name = f"Sec{sec_idx}_Scen{scen_idx}"
+                    pnt = folder_sec_scen.newpoint(name=scen_name)
+                    pnt.coords = [(lon2, lat2)]
+                    pnt.style.iconstyle.icon.href = "http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png"
+                    pnt.style.iconstyle.scale = 0.8
+                    pnt.style.labelstyle.color = simplekml.Color.yellow
+                    pnt.style.labelstyle.scale = 0.9
+                    pnt.visibility = 1
+            elif not is_atp_v1:
                 folder_sec = folder_spot.newfolder(name=f"Sec {sec_idx}")
                 folder_sec.visibility = 1
                 spot_counter = 1
@@ -797,7 +1104,7 @@ if selected_site:
                     py_spot = y0 + dist * math.cos(rad)
                     lon2, lat2 = transformer_to_wgs.transform(px_spot, py_spot)
 
-                    pnt = folder_sec.newpoint(name=f"Sec {sec_idx} spot {spot_counter}")
+                    pnt = folder_sec.newpoint(name=f"Sec{sec_idx}_Scen{spot_counter}")
                     pnt.coords = [(lon2, lat2)]
                     pnt.style.iconstyle.icon.href = "http://maps.google.com/mapfiles/kml/pushpin/blue-pushpin.png" if spot_counter == 2 else "http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png"
                     pnt.visibility = 1
@@ -814,8 +1121,10 @@ if selected_site:
                 p_spot.visibility = 1
                 p_spot.description = pt['desc_html']
 
-        if menu == "📑 KMZ for ATP":
-            kmz_name = f"ATP_{site_id}_{datetime.now().strftime('%d%b%Y')}.kmz"
+        if is_atp:
+            kmz_name = f"ATP_V2_{site_id}_{datetime.now().strftime('%d%b%Y')}.kmz"
+        elif is_atp_v1:
+            kmz_name = f"ATP_V1_{site_id}_{datetime.now().strftime('%d%b%Y')}.kmz"
         else:
             kmz_name = f"SSV_{site_id}_{datetime.now().strftime('%d%b%Y')}.kmz"
         
@@ -862,9 +1171,10 @@ if selected_site:
     st.markdown('</div>', unsafe_allow_html=True)
 
 else:
-    st.markdown("""
-    <div style="text-align: center; color: #8b949e; margin-top: 50px;">
-        <h1 style="font-size: 4rem; opacity: 0.2; background: none; -webkit-text-fill-color: #8b949e;">📡</h1>
-        <p>Gunakan kotak pencarian di atas untuk memulai.</p>
-    </div>
-    """, unsafe_allow_html=True)
+    st.markdown(
+        '<div style="text-align: center; color: #8b949e; margin-top: 50px;">'
+        '<h1 style="font-size: 4rem; opacity: 0.2; background: none; -webkit-text-fill-color: #8b949e;">📡</h1>'
+        '<p>Gunakan kotak pencarian di atas untuk memulai.</p>'
+        '</div>',
+        unsafe_allow_html=True
+    )
