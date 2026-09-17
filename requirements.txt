@@ -10,3 +10,4 @@ plotly
 geopy
 reportlab
 fpdf2
+gdown
