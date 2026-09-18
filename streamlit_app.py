@@ -580,17 +580,18 @@ with st.spinner('Mempersiapkan data...'):
     except Exception as e:
         st.error(f"Gagal menarik data: {e}")
         st.stop()
-        
-    try:
-        tilting_files = fetch_gdrive_tilting_files()
-    except Exception as e:
-        tilting_files = {}
 
 # ==============================
 # MENU: TILTING RECOMMENDATION
 # ==============================
 if menu == "📐 Tilting Recommendation":
     st.markdown('<div class="glass-card">', unsafe_allow_html=True)
+    
+    with st.spinner('Mengambil data foto rekomendasi tilting dari Google Drive...'):
+        try:
+            tilting_files = fetch_gdrive_tilting_files()
+        except Exception as e:
+            tilting_files = {}
     
     total_photos = len(tilting_files)
     
@@ -923,30 +924,7 @@ else:
             f'</div>'
         )
         st.markdown(header_html, unsafe_allow_html=True)
-    
-    # Cross-menu Tilting Recommendation Check
-    matched_tilting = find_tilting_photos_for_site(selected_site, tilting_files)
-    if matched_tilting:
-        with st.expander(f"📐 Rekomendasi Tilting Tersedia ({len(matched_tilting)} Foto) - Klik untuk Pratinjau & Unduh", expanded=False):
-            for p_item in matched_tilting:
-                col_t1, col_t2 = st.columns([2, 1])
-                with col_t1:
-                    st.image(p_item['thumbnail_url'], caption=p_item['filename'], use_container_width=True)
-                with col_t2:
-                    st.markdown(f"**File:** `{p_item['filename']}`")
-                    p_bytes = download_image_bytes(p_item['id'])
-                    if p_bytes:
-                        st.download_button(
-                            label=f"📥 Download {p_item['filename']}",
-                            data=p_bytes,
-                            file_name=p_item['filename'],
-                            mime=p_item['mime'] if p_item['mime'] else "image/jpeg",
-                            use_container_width=True,
-                            type="primary",
-                            key=f"map_tilting_dl_{p_item['id']}"
-                        )
-                    st.link_button("🌐 Buka di Google Drive", p_item['view_url'], use_container_width=True)
-
+        
         st.markdown('<div class="glass-card">', unsafe_allow_html=True)
 
         # Legend Generator untuk Sektor
