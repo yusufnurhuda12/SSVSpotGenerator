@@ -11,3 +11,4 @@ geopy
 reportlab
 fpdf2
 gdown
+Flask==3.0.0
