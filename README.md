@@ -9,7 +9,7 @@
 ---
 
 
-Link live deploy from streamlit : ssvtool.streamlit.app 
+Link live deploy from streamlit : https://ssvtool.streamlit.app 
 
 # SSV Spot Generator & Checker
 
