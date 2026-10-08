@@ -1,34 +1,48 @@
-# 📡 SSV Spot Generator & Checker
+> **English summary**
+>
+> **The problem:** Every spot point and KMZ file used to be created manually — drawn one by one in QGIS. Slow, error-prone, and every team waited on whoever could operate the desktop GIS.
+>
+> **What I built:** A production web app (Streamlit) that automates the whole workflow end to end. Site data syncs live from the existing database via Google Sheets; the app processes it with Python (geospatial math, coordinate validation) and serves KMZ coverage maps, sector polygons, and ATP-ready exports instantly — so every team can pull what they need in real time, no GIS expertise required.
+>
+> **Stack:** Python · Streamlit · Shapely/PyProj/Folium · Google Sheets API · PDF reporting. Built solo, deployed, and used in production by technical field teams.
 
-Aplikasi berbasis web interaktif yang dibangun menggunakan [Streamlit](https://streamlit.io/). Aplikasi ini dirancang khusus untuk mempermudah pekerjaan *engineer* telekomunikasi dalam merender file KMZ Sektoral secara instan, serta memvalidasi titik uji lapangan (*Single Site Verification*).
+---
 
-## ✨ Fitur Utama
-1. **📡 SSV Spot Generator**: Merender file KMZ Sektoral secara instan dan dinamis berdasarkan data site dari Google Sheets (termasuk pembuatan poligon radius sektor, garis azimuth, dan penanda jarak).
-2. **📑 KMZ for ATP**: Menghasilkan file KMZ khusus untuk kebutuhan ATP (*Acceptance Test Procedure*). Pada mode ini, titik-titik Spot SSV dihilangkan sehingga *output* menjadi lebih bersih sesuai dengan format ATP.
-3. **🎯 SSV Spot Checker**: Memvalidasi titik tes lapangan secara *real-time*. Anda cukup melakukan *copy-paste* data tabel pengujian dari Excel. Sistem akan memetakan koordinat ke *Live Interactive Map*, serta menghitung metrik jarak aktual (Haversine) dan memvisualisasikan Radar Azimuth.
+# SSV Spot Generator & Checker
 
-## 🚀 Panduan Menjalankan Secara Lokal
+Aplikasi web interaktif (Streamlit) untuk engineer telekomunikasi: merender file KMZ sektoral secara instan dan memvalidasi titik uji lapangan (Single Site Verification).
 
-### 1. Prasyarat Sistem
-Pastikan komputer Anda sudah terpasang Python (disarankan versi 3.8 atau lebih baru).
+## Kenapa aplikasi ini dibuat
 
-### 2. Instalasi Dependency
-Buka terminal/CMD, arahkan ke folder *project* ini, lalu jalankan perintah berikut untuk meng-install semua *library* pendukung:
+Pembuatan titik spot dan file KMZ sebelumnya dikerjakan manual — digambar satu per satu di QGIS. Prosesnya lambat, rawan salah, dan semua tim harus menunggu orang yang bisa mengoperasikan GIS desktop.
+
+Aplikasi ini mengotomatiskan seluruh alur: data site tersinkron langsung dari database (Google Sheets), diolah dengan Python, dan disajikan sebagai KMZ siap unduh — realtime, tanpa perlu keahlian GIS.
+
+## Fitur
+
+- **SSV Spot Generator** — Merender KMZ sektoral secara instan dari data Google Sheets: poligon radius sektor, garis azimuth, dan penanda jarak.
+- **KMZ for ATP** — Menghasilkan KMZ khusus Acceptance Test Procedure (titik spot dihilangkan agar output bersih sesuai format ATP).
+- **SSV Spot Checker** — Validasi titik uji lapangan secara realtime: paste data tabel dari Excel, sistem memetakan koordinat ke peta interaktif, menghitung jarak aktual (Haversine), dan memvisualisasikan radar azimuth. Hasil dapat diekspor ke PDF.
+
+## Cara menjalankan
+
+**Prasyarat:** Python 3.8+
+
 ```bash
 pip install -r requirements.txt
-```
-
-### 3. Menjalankan Aplikasi
-Ketik perintah ini di terminal untuk menjalankan *server* lokal Streamlit:
-```bash
 streamlit run streamlit_app.py
 ```
-Aplikasi akan secara otomatis terbuka di browser Anda (biasanya di alamat `http://localhost:8501`).
 
-## 📁 Struktur Direktori
-*   `streamlit_app.py` - File utama (*entry point*) untuk menjalankan seluruh UI, logika *map rendering*, dan pembuatan file KMZ.
-*   `report_generator.py` - Modul khusus pendukung untuk melakukan ekspor hasil validasi ke format dokumen PDF.
-*   `requirements.txt` - Daftar *library* (seperti `streamlit`, `simplekml`, `folium`, dll) yang dibutuhkan agar aplikasi ini dapat berjalan dengan sempurna.
+Buka `http://localhost:8501` di browser.
 
-## 🛡️ Catatan Tambahan
-Data yang digunakan untuk pemetaan ditarik secara langsung (*live sync*) dari Google Sheets publik. Jika ingin menyesuaikan sumber data, Anda bisa mengganti URL di dalam variabel `SHEET_URL` pada file `streamlit_app.py`.
+## Struktur project
+
+| File | Fungsi |
+| ---- | ------ |
+| `streamlit_app.py` | Entry point: UI, rendering peta, dan pembuatan KMZ |
+| `report_generator.py` | Ekspor hasil validasi ke PDF |
+| `requirements.txt` | Daftar dependency |
+
+## Catatan
+
+Data pemetaan disinkron langsung (live) dari Google Sheets publik. Untuk mengganti sumber data, ubah variabel `SHEET_URL` di `streamlit_app.py`.
