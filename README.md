@@ -8,6 +8,9 @@
 
 ---
 
+
+Link live deploy from streamlit : ssvtool.streamlit.app 
+
 # SSV Spot Generator & Checker
 
 Aplikasi web interaktif (Streamlit) untuk engineer telekomunikasi: merender file KMZ sektoral secara instan dan memvalidasi titik uji lapangan (Single Site Verification).
