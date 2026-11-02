@@ -51,35 +51,71 @@ if os.path.exists(MASCOT_PATH):
         MASCOT_B64 = ""
 
 # ==============================
-# [UI-ONLY] SAWERIA-INSPIRED NEO-BRUTALISM CSS (ZERO EMOJIS, HIGH CONTRAST)
+# [UI-ONLY] SAWERIA-INSPIRED NEO-BRUTALISM CSS (ROBUST LOCAL & CLOUD, ZERO EMOJIS)
 # ==============================
+# Minimum Streamlit Version Required: Streamlit >= 1.35.0 (for native Material Symbols & robust selector support)
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&family=Comfortaa:wght@700;800&display=swap');
 
-html, body, [class*="css"] {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    color: #1A1A1A;
+/* 1. Global Light Theme Enforcement (Resistant to System & Cloud Dark Mode) */
+:root {
+    color-scheme: light !important;
+    --primary-amber: #FFAE2B;
+    --accent-toska: #8DD3DB;
+    --accent-pink: #FFBCC4;
+    --accent-lavender: #D4C8E8;
+    --accent-mint: #A9D6A0;
+    --bg-light: #F8F9F8;
+    --bg-white: #FFFFFF;
+    --text-dark: #1A1A1A;
+    --border-dark: #1A1A1A;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root, html, body, [class*="css"], .stApp, [data-testid="stAppViewContainer"] {
+        color-scheme: light !important;
+        background-color: #F8F9F8 !important;
+        color: #1A1A1A !important;
+    }
+}
+
+html, body, [class*="css"], .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"] {
+    font-family: 'Plus Jakarta Sans', sans-serif !important;
+    color: #1A1A1A !important;
     background-color: #F8F9F8 !important;
 }
 
-.stApp {
-    background-color: #F8F9F8 !important;
+/* 2. Container Padding & Header Overlay Protection (Prevents Banner from Covering Hero) */
+[data-testid="stHeader"], header[data-testid="stHeader"] {
+    background: transparent !important;
+    height: 0px !important;
+    min-height: 0px !important;
+    display: none !important;
+    visibility: hidden !important;
 }
 
-.block-container {
+.block-container,
+[data-testid="stMainBlockContainer"],
+[data-testid="block-container"] {
     max-width: 1200px !important;
-    padding-top: 56px !important;
+    padding-top: 86px !important; /* Banner height + 48px clearance for hero */
     padding-bottom: 60px !important;
     padding-left: 20px !important;
     padding-right: 20px !important;
 }
 
-header[data-testid="stHeader"] {
-    display: none !important;
+@media (max-width: 768px) {
+    .block-container,
+    [data-testid="stMainBlockContainer"],
+    [data-testid="block-container"] {
+        padding-top: 104px !important; /* Extra room when banner text wraps on small screens */
+        padding-left: 14px !important;
+        padding-right: 14px !important;
+    }
 }
 
-/* Edge-to-Edge Top Amber Strip Banner */
+/* 3. Edge-to-Edge Top Amber Strip Banner */
 .top-full-banner {
     position: fixed;
     top: 0;
@@ -88,7 +124,7 @@ header[data-testid="stHeader"] {
     width: 100vw;
     background: #FFAE2B;
     border-bottom: 2.5px solid #1A1A1A;
-    padding: 7px 0;
+    padding: 8px 0;
     font-family: 'IBM Plex Mono', monospace;
     font-size: 0.76rem;
     font-weight: 700;
@@ -99,11 +135,11 @@ header[data-testid="stHeader"] {
     justify-content: center;
 }
 
-/* Centered Hero Header with Floating Mascot */
+/* 4. Centered Hero Header with Floating Mascot */
 .hero-header-box {
     text-align: center;
-    padding: 24px 16px 14px 16px;
-    margin-bottom: 8px;
+    padding: 10px 16px 14px 16px;
+    margin-bottom: 12px;
 }
 .hero-mascot-container {
     display: flex;
@@ -130,26 +166,27 @@ header[data-testid="stHeader"] {
     }
 }
 .hero-title {
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Comfortaa', cursive, sans-serif !important;
     font-size: clamp(2rem, 5vw, 2.7rem);
-    font-weight: 900;
+    font-weight: 800;
     letter-spacing: -0.03em;
-    color: #1A1A1A;
+    color: #1A1A1A !important;
     margin: 0 0 4px 0;
     text-transform: uppercase;
 }
 .hero-subtitle {
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.82rem;
-    font-weight: 600;
-    color: #4A4A4A;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #4A4A4A !important;
     margin: 0;
     letter-spacing: 0.04em;
 }
 
-/* Streamlit Native Container Borders styled as Neo-Brutalist Cards */
-div[data-testid="stVerticalBlockBorderWrapper"] {
-    background: #FFFFFF !important;
+/* 5. Streamlit Native Container Borders (Neo-Brutalist Cards) */
+div[data-testid="stVerticalBlockBorderWrapper"],
+.stVerticalBlockBorderWrapper {
+    background-color: #FFFFFF !important;
     border: 2px solid #1A1A1A !important;
     border-radius: 8px !important;
     box-shadow: 5px 5px 0px #1A1A1A !important;
@@ -158,7 +195,7 @@ div[data-testid="stVerticalBlockBorderWrapper"] {
     position: relative !important;
 }
 
-/* Attached Card Tab (Anchored firmly inside the container) */
+/* Attached Card Tab (Anchored firmly inside container) */
 .card-attached-tab {
     position: absolute !important;
     top: -14px !important;
@@ -174,115 +211,98 @@ div[data-testid="stVerticalBlockBorderWrapper"] {
     z-index: 10 !important;
     letter-spacing: 0.02em !important;
 }
-.card-attached-tab.amber { background: #FFAE2B; color: #1A1A1A; }
-.card-attached-tab.toska { background: #8DD3DB; color: #1A1A1A; }
-.card-attached-tab.pink { background: #FFBCC4; color: #1A1A1A; }
-.card-attached-tab.mint { background: #A9D6A0; color: #1A1A1A; }
-.card-attached-tab.lavender { background: #D6C7FF; color: #1A1A1A; }
+.card-attached-tab.amber { background-color: #FFAE2B !important; color: #1A1A1A !important; }
+.card-attached-tab.toska { background-color: #8DD3DB !important; color: #1A1A1A !important; }
+.card-attached-tab.pink { background-color: #FFBCC4 !important; color: #1A1A1A !important; }
+.card-attached-tab.mint { background-color: #A9D6A0 !important; color: #1A1A1A !important; }
+.card-attached-tab.lavender { background-color: #D6C7FF !important; color: #1A1A1A !important; }
 
 .subtitle {
     font-family: 'IBM Plex Mono', monospace;
     font-size: 0.85rem;
-    color: #4A4A4A;
+    color: #4A4A4A !important;
     font-weight: 500;
     margin-top: 4px;
 }
 
-/* Badges */
-.badge-pill, .live-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 4px 10px;
-    border-radius: 20px;
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.72rem;
-    font-weight: 700;
-    border: 1.5px solid #1A1A1A;
-    box-shadow: 2px 2px 0px #1A1A1A;
-    background: #A9D6A0;
-    color: #1A1A1A;
-}
-.badge-pill-amber { background: #FFAE2B; color: #1A1A1A; }
-.badge-pill-mint { background: #A9D6A0; color: #1A1A1A; }
-.badge-pill-toska { background: #8DD3DB; color: #1A1A1A; }
-.badge-pill-pink { background: #FFBCC4; color: #1A1A1A; }
-.badge-pill-lavender { background: #D6C7FF; color: #1A1A1A; }
-.badge-pill-slate { background: #E2E8F0; color: #1A1A1A; }
-
-.pulse-dot {
-    display: inline-block;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background-color: #10b981;
-    animation: livePulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-    flex-shrink: 0;
-}
-@keyframes livePulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.4; transform: scale(0.85); }
-}
-
-/* Tab Navigation Buttons */
-div[data-testid="column"] div[data-testid="stButton"] button {
+/* 6. Robust Tab Navigation Buttons (Prevents Red Active Tab on Cloud) */
+div[data-testid="column"] div[data-testid="stButton"] > button,
+div[data-testid="column"] button[data-testid="baseButton-secondary"],
+div[data-testid="column"] button[kind="secondary"] {
     width: 100% !important;
     height: 48px !important;
-    font-family: 'Comfortaa', 'Outfit', sans-serif !important;
+    font-family: 'Comfortaa', cursive, sans-serif !important;
     font-size: 0.88rem !important;
     font-weight: 800 !important;
     border: 2px solid #1A1A1A !important;
     border-radius: 6px !important;
+    background-color: #FFFFFF !important;
+    color: #1A1A1A !important;
+    box-shadow: 4px 4px 0px #1A1A1A !important;
     transition: all 0.1s ease !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
     gap: 8px !important;
 }
-div[data-testid="column"] div[data-testid="stButton"] button[kind="secondary"] {
-    background: #FFFFFF !important;
-    color: #1A1A1A !important;
-    box-shadow: 4px 4px 0px #1A1A1A !important;
-}
-div[data-testid="column"] div[data-testid="stButton"] button[kind="secondary"]:hover {
+div[data-testid="column"] div[data-testid="stButton"] > button:hover {
     transform: translate(2px, 2px) !important;
     box-shadow: 2px 2px 0px #1A1A1A !important;
 }
-div[data-testid="column"]:nth-of-type(1) div[data-testid="stButton"] button[kind="primary"] {
-    background: #FFAE2B !important;
+
+/* Tab 1 Active: Amber */
+div[data-testid="column"]:nth-of-type(1) div[data-testid="stButton"] > button[data-testid="baseButton-primary"],
+div[data-testid="column"]:nth-of-type(1) div[data-testid="stButton"] > button[kind="primary"] {
+    background-color: #FFAE2B !important;
     color: #1A1A1A !important;
+    border: 2px solid #1A1A1A !important;
     box-shadow: 0px 0px 0px #1A1A1A !important;
     transform: translate(3px, 3px) !important;
 }
-div[data-testid="column"]:nth-of-type(2) div[data-testid="stButton"] button[kind="primary"] {
-    background: #8DD3DB !important;
+/* Tab 2 Active: Toska */
+div[data-testid="column"]:nth-of-type(2) div[data-testid="stButton"] > button[data-testid="baseButton-primary"],
+div[data-testid="column"]:nth-of-type(2) div[data-testid="stButton"] > button[kind="primary"] {
+    background-color: #8DD3DB !important;
     color: #1A1A1A !important;
+    border: 2px solid #1A1A1A !important;
     box-shadow: 0px 0px 0px #1A1A1A !important;
     transform: translate(3px, 3px) !important;
 }
-div[data-testid="column"]:nth-of-type(3) div[data-testid="stButton"] button[kind="primary"] {
-    background: #FFBCC4 !important;
+/* Tab 3 Active: Pink */
+div[data-testid="column"]:nth-of-type(3) div[data-testid="stButton"] > button[data-testid="baseButton-primary"],
+div[data-testid="column"]:nth-of-type(3) div[data-testid="stButton"] > button[kind="primary"] {
+    background-color: #FFBCC4 !important;
     color: #1A1A1A !important;
+    border: 2px solid #1A1A1A !important;
     box-shadow: 0px 0px 0px #1A1A1A !important;
     transform: translate(3px, 3px) !important;
 }
-div[data-testid="column"]:nth-of-type(4) div[data-testid="stButton"] button[kind="primary"] {
-    background: #D6C7FF !important;
+/* Tab 4 Active: Lavender */
+div[data-testid="column"]:nth-of-type(4) div[data-testid="stButton"] > button[data-testid="baseButton-primary"],
+div[data-testid="column"]:nth-of-type(4) div[data-testid="stButton"] > button[kind="primary"] {
+    background-color: #D6C7FF !important;
     color: #1A1A1A !important;
+    border: 2px solid #1A1A1A !important;
     box-shadow: 0px 0px 0px #1A1A1A !important;
     transform: translate(3px, 3px) !important;
 }
 
-/* Material Symbols in buttons and text */
-span[data-testid="stIconMaterial"] {
+/* 7. Robust Material Symbols & Icons (Always #1A1A1A) */
+span[data-testid="stIconMaterial"],
+div[data-testid="stButton"] span[data-testid="stIconMaterial"],
+div[data-testid="stDownloadButton"] span[data-testid="stIconMaterial"],
+button span[data-testid="stIconMaterial"],
+.stIconMaterial {
     color: #1A1A1A !important;
+    fill: currentColor !important;
     font-size: 1.15rem !important;
     vertical-align: middle !important;
 }
 
-/* Sync Data Button Styling (Lavender with 5px hard shadow) */
-div[data-testid="column"]:nth-of-type(2) div[data-testid="stButton"] button {
-    background: #D4C8E8 !important;
+/* 8. Sync Data Button Styling (Lavender with 5px hard shadow) */
+div[data-testid="stVerticalBlockBorderWrapper"] div[data-testid="column"]:nth-of-type(2) div[data-testid="stButton"] > button,
+div[data-testid="stVerticalBlockBorderWrapper"] div[data-testid="column"]:nth-of-type(2) button {
+    background-color: #D4C8E8 !important;
     color: #1A1A1A !important;
     border: 2px solid #1A1A1A !important;
     border-radius: 6px !important;
@@ -292,12 +312,13 @@ div[data-testid="column"]:nth-of-type(2) div[data-testid="stButton"] button {
     font-size: 0.88rem !important;
     height: 44px !important;
 }
-div[data-testid="column"]:nth-of-type(2) div[data-testid="stButton"] button:hover {
+div[data-testid="stVerticalBlockBorderWrapper"] div[data-testid="column"]:nth-of-type(2) div[data-testid="stButton"] > button:hover {
     transform: translate(2px, 2px) !important;
     box-shadow: 3px 3px 0px #1A1A1A !important;
 }
 
-/* Selectbox Dropdown Styling (White, 2px border, 4px shadow, focus amber) */
+/* 9. Selectbox & Dropdown Popover (Resistant to Cloud Dark Mode) */
+div[data-testid="stSelectbox"] div[data-baseweb="select"] > div,
 div[data-baseweb="select"] > div {
     background-color: #FFFFFF !important;
     border: 2px solid #1A1A1A !important;
@@ -310,13 +331,35 @@ div[data-baseweb="select"]:focus-within > div {
     border-color: #1A1A1A !important;
     box-shadow: 4px 4px 0px #FFAE2B !important;
 }
-div[data-baseweb="select"] * {
+div[data-baseweb="select"] *,
+div[data-baseweb="select"] span {
     color: #1A1A1A !important;
     font-family: 'IBM Plex Mono', monospace !important;
     font-weight: 600 !important;
 }
 
-/* Site Bento Grid Cards */
+/* BaseWeb Popover dropdown menu at body root */
+div[data-baseweb="popover"],
+div[data-baseweb="menu"],
+ul[role="listbox"] {
+    background-color: #FFFFFF !important;
+    border: 2px solid #1A1A1A !important;
+    border-radius: 6px !important;
+    box-shadow: 4px 4px 0px #1A1A1A !important;
+    color: #1A1A1A !important;
+}
+li[role="option"] {
+    background-color: #FFFFFF !important;
+    color: #1A1A1A !important;
+    font-family: 'IBM Plex Mono', monospace !important;
+}
+li[role="option"]:hover,
+li[aria-selected="true"] {
+    background-color: #FFAE2B !important;
+    color: #1A1A1A !important;
+}
+
+/* 10. Site Bento Grid Cards */
 .site-bento-grid {
     display: grid;
     grid-template-columns: 1fr 1fr 1.1fr 1.6fr;
@@ -347,7 +390,7 @@ div[data-baseweb="select"] * {
     font-family: 'IBM Plex Mono', monospace;
     font-size: 0.68rem;
     font-weight: 700;
-    color: #1A1A1A;
+    color: #1A1A1A !important;
     text-transform: uppercase;
     letter-spacing: 0.05em;
     margin-bottom: 3px;
@@ -356,7 +399,7 @@ div[data-baseweb="select"] * {
     font-family: 'IBM Plex Mono', monospace;
     font-size: 1rem;
     font-weight: 800;
-    color: #1A1A1A;
+    color: #1A1A1A !important;
     overflow-wrap: anywhere;
     white-space: normal;
 }
@@ -364,19 +407,19 @@ div[data-baseweb="select"] * {
     font-family: 'IBM Plex Mono', monospace;
     font-size: 0.82rem;
     font-weight: 700;
-    color: #1A1A1A;
+    color: #1A1A1A !important;
     overflow-wrap: anywhere;
     white-space: normal;
     line-height: 1.35;
 }
 
-/* Sector Legend Bar */
+/* 11. Sector Legend Bar */
 .legend-bar {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
     gap: 10px;
-    background: #FFFFFF;
+    background-color: #FFFFFF;
     border: 1.5px solid #1A1A1A;
     border-radius: 6px;
     padding: 5px 12px;
@@ -389,7 +432,7 @@ div[data-baseweb="select"] * {
     font-family: 'IBM Plex Mono', monospace;
     font-size: 0.78rem;
     font-weight: 600;
-    color: #1A1A1A;
+    color: #1A1A1A !important;
 }
 .legend-dot {
     display: inline-block;
@@ -400,8 +443,9 @@ div[data-baseweb="select"] * {
     flex-shrink: 0;
 }
 
-/* Symmetrical Action Download Buttons (Amber KMZ & Toska PDF) */
-div[data-testid="stDownloadButton"] button {
+/* 12. Symmetrical Download Buttons (Amber KMZ & Toska PDF) */
+div[data-testid="stDownloadButton"] > button,
+button[data-testid="baseButton-primary"]:has([data-testid="stIconMaterial"]) {
     min-height: 56px !important;
     height: 56px !important;
     border: 2.5px solid #1A1A1A !important;
@@ -418,26 +462,27 @@ div[data-testid="stDownloadButton"] button {
     cursor: pointer !important;
     gap: 8px !important;
 }
-div[data-testid="stDownloadButton"] button:hover {
+div[data-testid="stDownloadButton"] > button:hover {
     transform: translate(2px, 2px) !important;
     box-shadow: 3px 3px 0px #1A1A1A !important;
 }
-div[data-testid="stDownloadButton"] button:active {
+div[data-testid="stDownloadButton"] > button:active {
     transform: translate(4px, 4px) !important;
     box-shadow: 0px 0px 0px #1A1A1A !important;
 }
-div[data-testid="column"]:nth-of-type(1) div[data-testid="stDownloadButton"] button {
-    background: #FFAE2B !important; /* Amber for KMZ */
+div[data-testid="column"]:nth-of-type(1) div[data-testid="stDownloadButton"] > button {
+    background-color: #FFAE2B !important; /* Amber for KMZ */
     color: #1A1A1A !important;
 }
-div[data-testid="column"]:nth-of-type(2) div[data-testid="stDownloadButton"] button {
-    background: #8DD3DB !important; /* Toska for PDF */
+div[data-testid="column"]:nth-of-type(2) div[data-testid="stDownloadButton"] > button {
+    background-color: #8DD3DB !important; /* Toska for PDF */
     color: #1A1A1A !important;
 }
 
-/* Status Widget: Flat Mint Card with Dark Border & Hard Shadow */
-div[data-testid="stStatusWidget"] {
-    background: #E8F5E9 !important;
+/* 13. Status Widget & Alerts (Flat Mint with Dark Border) */
+div[data-testid="stStatusWidget"],
+div[data-testid="stAlert"] {
+    background-color: #A9D6A0 !important;
     border: 2px solid #1A1A1A !important;
     border-radius: 8px !important;
     box-shadow: 4px 4px 0px #1A1A1A !important;
@@ -445,10 +490,21 @@ div[data-testid="stStatusWidget"] {
     font-family: 'IBM Plex Mono', monospace !important;
     color: #1A1A1A !important;
 }
+div[data-testid="stStatusWidget"] *,
+div[data-testid="stAlert"] * {
+    color: #1A1A1A !important;
+    font-family: 'Comfortaa', 'IBM Plex Mono', monospace !important;
+    font-weight: 700 !important;
+}
+div[data-testid="stStatusWidget"] svg,
+div[data-testid="stAlert"] svg {
+    color: #1A1A1A !important;
+    stroke: #1A1A1A !important;
+}
 
-/* Expander Neo-Brutalism */
+/* 14. Expander & Textarea Neo-Brutalism */
 div[data-testid="stExpander"] {
-    background: #FFFFFF !important;
+    background-color: #FFFFFF !important;
     border: 2px solid #1A1A1A !important;
     border-radius: 6px !important;
     box-shadow: 3px 3px 0px #1A1A1A !important;
@@ -459,9 +515,8 @@ div[data-testid="stExpander"] summary {
     font-weight: 700 !important;
     color: #1A1A1A !important;
 }
-
-/* Textarea Neo-Brutalism */
-div[data-testid="stTextArea"] textarea {
+div[data-testid="stTextArea"] textarea,
+div[data-testid="stTextInput"] input {
     background-color: #FFFFFF !important;
     border: 2px solid #1A1A1A !important;
     border-radius: 6px !important;
