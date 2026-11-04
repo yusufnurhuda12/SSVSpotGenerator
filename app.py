@@ -989,7 +989,8 @@ if menu == "Tilting Recommendation":
                                 use_container_width=True,
                                 type="primary",
                                 icon=":material/download:",
-                                key=f"dl_single_{photo_item['id']}"
+                                key=f"dl_single_{photo_item['id']}",
+                                on_click="ignore"
                             )
                         with col_dl2:
                             st.link_button(
